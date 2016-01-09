@@ -11,7 +11,6 @@ use Yii;
  * @property string $name
  * @property integer $active
  *
- * @property PostCategory[] $postCategories
  */
 class Category extends \yii\db\ActiveRecord
 {

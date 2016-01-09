@@ -2,12 +2,14 @@
 
 namespace frontend\controllers;
 
+use common\models\Category;
 use Yii;
 use common\models\Post;
 use common\models\PostSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PostController implements the CRUD actions for Post model.
@@ -63,11 +65,18 @@ class PostController extends Controller
         $model = new Post();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            /** @var Category[] $categories */
+            $categories = Category::find()->where(['id'=>$model->id_category])->all();
+            foreach($categories as $category){
+                $model->link('categories', $category);
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('create', [
+            return $this->render('create', array(
                 'model' => $model,
-            ]);
+                'modelCategory' => ArrayHelper::map(Category::find()->all(),'id','name')
+            ));
         }
     }
 
@@ -80,13 +89,20 @@ class PostController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->id_category = ArrayHelper::getColumn($model->categories, 'id');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->unlinkAll('categories', true);
+            $categories = Category::find()->where(['id'=>$model->id_category])->all();
+            foreach($categories as $category) {
+                $model->link('categories', $category);
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            return $this->render('update', array(
                 'model' => $model,
-            ]);
+                'modelCategory' => ArrayHelper::map(Category::find()->all(),'id','name')
+            ));
         }
     }
 
@@ -98,7 +114,9 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id)->delete();
+        $model->unlinkAll('categories', true);
+        $model->delete();
 
         return $this->redirect(['index']);
     }

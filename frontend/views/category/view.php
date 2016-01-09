@@ -23,6 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a(Yii::t('app', 'Create more'), ['create', 'id' => $model->id], [
+            'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-success'
+        ]) ?>
     </p>
 
     <?= DetailView::widget([
@@ -30,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'active',
         ],
     ]) ?>
 

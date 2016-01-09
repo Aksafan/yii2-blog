@@ -99,7 +99,11 @@ class CategoryController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        if (!empty($model->posts)){
+            return $this->render('error');
+        } else {
+            $model->delete();
+        }
         return $this->redirect(['index']);
     }
 

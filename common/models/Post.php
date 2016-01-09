@@ -15,9 +15,12 @@ use Yii;
  *
  * @property Comments[] $comments
  * @property PostCategory[] $postCategories
+ * @property mixed categories
  */
 class Post extends \yii\db\ActiveRecord
 {
+    public $id_category;
+
     /**
      * @inheritdoc
      */
