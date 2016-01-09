@@ -35,8 +35,8 @@ class Post extends \yii\db\ActiveRecord
             [['title', 'description', 'created_at'], 'required'],
             [['created_at', 'active'], 'integer'],
             ['id_category', 'safe'],
-            [['title'], 'string', 'max' => 255, 'message' => 'Не может быть больше 255 символов.'],
-            [['description'], 'string', 'max' => 50000, 'message' => 'Не может быть больше 50 000 символов.'],
+            [['title'], 'string', 'max' => 255, 'message' => 'Cannot be more than 255 symbols.'],
+            [['description'], 'string', 'max' => 50000, 'message' => 'Cannot be more than 50 000 symbols.'],
         ];
     }
 
@@ -48,7 +48,7 @@ class Post extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'title' => Yii::t('app', 'Title'),
-            'description' => Yii::t('app', 'Description'),
+            'description' => Yii::t('app', 'Your post'),
             'created_at' => Yii::t('app', 'Post created at'),
         ];
     }

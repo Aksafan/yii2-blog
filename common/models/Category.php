@@ -30,7 +30,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name'], 'string', 'max' => 255]
+            [['name'], 'string', 'max' => 255, 'message' => 'Cannot be more than 255 symbols.']
         ];
     }
 
@@ -41,7 +41,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'name' => Yii::t('app', 'Name'),
+            'name' => Yii::t('app', 'Category name'),
         ];
     }
 
