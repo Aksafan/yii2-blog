@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+use common\models\Post;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\PostSearch */
@@ -28,6 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             'description:ntext',
+            [
+                'attribute' => 'Categories',
+                'value' => function(Post $model){
+                    return implode(', ', ArrayHelper::getColumn($model->categories, 'name'));
+                }
+            ],
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],

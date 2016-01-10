@@ -98,8 +98,8 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-        if (!empty($model->posts)){
+        $model = $this->findModel($id);
+        if (!empty($model->post)){
             return $this->render('error');
         } else {
             $model->delete();
