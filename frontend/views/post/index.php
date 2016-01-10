@@ -31,7 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'description:ntext',
             [
-                'attribute' => 'Categories',
+                'attribute' => 'cat_name',
+                'label' => 'Categories',
                 'value' => function(Post $model){
                     return implode(', ', ArrayHelper::getColumn($model->categories, 'name'));
                 }

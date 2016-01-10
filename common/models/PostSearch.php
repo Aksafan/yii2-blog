@@ -12,6 +12,8 @@ use common\models\Post;
  */
 class PostSearch extends Post
 {
+    public $cat_name;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class PostSearch extends Post
     {
         return [
             [['id', 'created_at', 'active'], 'integer'],
-            [['title', 'description'], 'safe'],
+            [['title', 'description', 'cat_name'], 'safe'],
         ];
     }
 
@@ -41,7 +43,7 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-        $query = Post::find();
+        $query = Post::find()->joinWith('categories');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -62,7 +64,9 @@ class PostSearch extends Post
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'description', $this->description]);
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'name', $this->cat_name]);
+
 
         return $dataProvider;
     }
