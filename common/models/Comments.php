@@ -43,8 +43,8 @@ class Comments extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'created_at' => Yii::t('app', 'Comment created at'),
-            'description' => Yii::t('app', 'Write Your comment here'),
+            'created_at' => Yii::t('app', 'Created at'),
+            'description' => Yii::t('app', 'Comment'),
         ];
     }
 

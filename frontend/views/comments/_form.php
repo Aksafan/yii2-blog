@@ -10,9 +10,11 @@ use yii\widgets\ActiveForm;
 
 <div class="comments-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'action' => isset($actionComments) ? [$actionComments] : '',
+    ]); ?>
 
-    <?= $form->field($model, 'id_post')->textInput() ?>
+    <?= Html::activeHiddenInput($model, 'id_post') ?>
 
     <?= $form->field($model, 'created_at')->textInput() ?>
 

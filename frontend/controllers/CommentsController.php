@@ -62,13 +62,9 @@ class CommentsController extends Controller
     {
         $model = new Comments();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        $model->load(Yii::$app->request->post()) && $model->save();
+
+        return $this->redirect(['post/view', 'id' => $model->id_post]);
     }
 
     /**
