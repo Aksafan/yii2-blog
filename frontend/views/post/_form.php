@@ -21,7 +21,7 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'created_at')->textInput() ?>
 
     <?= $form->field($model, 'id_category')->widget(Select2::classname(), [
-        'data' => $modelCategory,
+        'data' => $model,
         'options' => ['placeholder' => 'Select a category'],
         'pluginOptions' => [
             'allowClear' => true,

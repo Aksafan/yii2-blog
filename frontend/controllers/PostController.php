@@ -114,7 +114,7 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id)->delete();
+        $model = $this->findModel($id);
         $model->unlinkAll('categories', true);
         $model->delete();
 
