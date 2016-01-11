@@ -37,7 +37,7 @@ AppAsset::register($this);
         ],
     ]);
 
-    $categories = Category::find()->select(['name', 'id'])->all();
+    $categories = Category::find()->where(['active' => true])->select(['name', 'id'])->all();
     $categoryMenu = [
         ['label' => 'All categories', 'url' => ['/category']],
         ['label' => '', 'options' => ['class' => 'divider']],

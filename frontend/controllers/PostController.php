@@ -101,7 +101,7 @@ class PostController extends Controller
         } else {
             return $this->render('create', array(
                 'model' => $model,
-                'modelCategory' => ArrayHelper::map(Category::find()->all(),'id','name')
+                'modelCategory' => ArrayHelper::map(Category::find()->where(['active' => true])->all(),'id','name')
             ));
         }
     }
@@ -127,7 +127,7 @@ class PostController extends Controller
         } else {
             return $this->render('update', array(
                 'model' => $model,
-                'modelCategory' => ArrayHelper::map(Category::find()->all(),'id','name')
+                'modelCategory' => ArrayHelper::map(Category::find()->where(['active' => true])->all(),'id','name')
             ));
         }
     }
@@ -141,8 +141,8 @@ class PostController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $model->unlinkAll('categories', true);
-        $model->delete();
+        $model->active = false;
+        $model->save();
 
         return $this->redirect(['index']);
     }
@@ -156,7 +156,7 @@ class PostController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Post::findOne($id)) !== null) {
+        if (($model = Post::findOne(['id' => $id, 'active' => true])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

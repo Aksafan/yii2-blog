@@ -116,11 +116,9 @@ class CategoryController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        if (!empty($model->post)){
-            return $this->render('error');
-        } else {
-            $model->delete();
-        }
+        $model->active = false;
+        $model->save();
+
         return $this->redirect(['index']);
     }
 
@@ -133,7 +131,7 @@ class CategoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Category::findOne($id)) !== null) {
+        if (($model = Category::findOne(['id' => $id, 'active' => true])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

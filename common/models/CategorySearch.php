@@ -41,7 +41,7 @@ class CategorySearch extends Category
      */
     public function search($params)
     {
-        $query = Category::find();
+        $query = Category::find()->where(['active' => true]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
