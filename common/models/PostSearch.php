@@ -47,7 +47,13 @@ class PostSearch extends Post
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['attributes' => ['id', 'title', 'description', 'created_at']]
         ]);
+        $dataProvider->sort->attributes['cat_name'] = [
+            // 'name' here is a column from Category table
+            'asc' => ['name' => SORT_ASC],
+            'desc' => ['name' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -61,6 +67,7 @@ class PostSearch extends Post
             'id' => $this->id,
             'created_at' => $this->created_at,
             'active' => $this->active,
+
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])

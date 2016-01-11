@@ -58,8 +58,8 @@ class PostController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
             'comments' => $comments,
-            'commentsProvider' => new ActiveDataProvider([
-                'query' => Comments::find()->where(['id_post' => $id]),
+            'ataProvider' => new ActiveDataProvider([
+                'query' => Comments::find()->where(['post_id' => $id]),
             ])
         ]);
     }
