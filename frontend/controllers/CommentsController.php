@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\Comments;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,6 +22,22 @@ class CommentsController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['login', 'logout', 'signup','create','update','delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['login', 'signup'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['logout', 'create','update','delete'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
