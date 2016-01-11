@@ -43,7 +43,7 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-        $query = Post::find()->joinWith('categories');
+        $query = Post::find()->where(['post.active' => true])->joinWith('categories');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

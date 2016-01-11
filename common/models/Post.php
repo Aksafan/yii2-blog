@@ -36,8 +36,8 @@ class Post extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'description', 'created_at'], 'required'],
-            [['created_at', 'active'], 'integer'],
-            [['id_category', 'active'], 'safe'],
+            [['created_at'], 'integer'],
+            [['id_category'], 'safe'],
             [['title'], 'string', 'max' => 255, 'message' => 'Cannot be more than 255 symbols.'],
             [['description'], 'string', 'max' => 50000, 'message' => 'Cannot be more than 50 000 symbols.'],
         ];
