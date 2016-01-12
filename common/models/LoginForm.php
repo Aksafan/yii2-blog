@@ -53,25 +53,6 @@ class LoginForm extends Model
         }
     }
 
-    public function validatePassword()
-    {
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError('password', 'Неверное имя пользователя или пароль.');
-            } elseif ($user && $user->status == User::STATUS_DELETED) {
-                $this->addError('username', 'Ваш аккаунт заблокирован.');
-            } elseif ($user && $user->status == User::STATUS_WAIT) {
-                $this->addError('username', 'Ваш аккаунт не подтвежден.');
-            }
-        }
-    }
-
-
-
-
-
     /**
      * Logs in a user using the provided username and password.
      *
