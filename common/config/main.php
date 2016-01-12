@@ -5,5 +5,14 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+    ],
+    'modules' => [
+        'redactor' => 'yii\redactor\RedactorModule',
     ],
 ];

@@ -13,6 +13,7 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $verifyCode;
 
     /**
      * @inheritdoc
@@ -22,6 +23,7 @@ class SignupForm extends Model
         return [
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
+            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
             ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
@@ -33,6 +35,21 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            ['verifyCode', 'captcha'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'verifyCode' => 'Verification Code',
+            'username' => 'Enter your username',
+            'email' => 'Enter your email',
+            'password' => 'Enter your password',
         ];
     }
 
@@ -49,9 +66,17 @@ class SignupForm extends Model
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
+            $user->status = User::STATUS_WAIT;
+            $user->generateEmailConfirmToken();
             if ($user->save()) {
-                return $user;
+                Yii::$app->mailer->compose('/site/emailConfirm', ['user' => $user])
+                    ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
+                    ->setTo($this->email)
+                    ->setSubject('Email confirmation for ' . Yii::$app->name)
+                    ->send();
             }
+
+            return $user;
         }
 
         return null;
