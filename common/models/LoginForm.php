@@ -3,6 +3,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use common\models\User;
 
 /**
  * Login form
@@ -44,9 +45,32 @@ class LoginForm extends Model
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
+            } elseif ($user && $user->status == User::STATUS_DELETED) {
+                $this->addError($attribute, 'Your account is deleted.');
+            } elseif ($user && $user->status == User::STATUS_WAIT) {
+                $this->addError($attribute, 'Your account is not confirmed.');
             }
         }
     }
+
+    public function validatePassword()
+    {
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+
+            if (!$user || !$user->validatePassword($this->password)) {
+                $this->addError('password', 'Неверное имя пользователя или пароль.');
+            } elseif ($user && $user->status == User::STATUS_DELETED) {
+                $this->addError('username', 'Ваш аккаунт заблокирован.');
+            } elseif ($user && $user->status == User::STATUS_WAIT) {
+                $this->addError('username', 'Ваш аккаунт не подтвежден.');
+            }
+        }
+    }
+
+
+
+
 
     /**
      * Logs in a user using the provided username and password.

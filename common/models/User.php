@@ -5,6 +5,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -20,11 +21,37 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property string $email_confirm_token
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+    const STATUS_WAIT = 1;
+
+    /**
+     * Gets name of user's status
+     *
+     * @return string
+     */
+    public function getStatusName()
+    {
+        return ArrayHelper::getValue(self::getStatusesArray(), $this->status);
+    }
+
+    /**
+     * Gets list of user's statuses
+     *
+     * @return array
+     */
+    public static function getStatusesArray()
+    {
+        return [
+            self::STATUS_DELETED => 'Blocked',
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_WAIT => 'Waiting for confirmation',
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -50,8 +77,33 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['username', 'required'],
+            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
+            ['username', 'unique', 'targetClass' => self::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique', 'targetClass' => self::className(), 'message' => 'This email address has already been taken.'],
+
+            ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'created_at' => 'Created at',
+            'updated_at' => 'Updated at',
+            'username' => 'User name',
+            'email' => 'Email',
+            'status' => 'Status',
         ];
     }
 
@@ -171,6 +223,20 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Makes @met generateAuthKey to auto start with adding new User record to BD
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->generateAuthKey();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Generates new password reset token
      */
     public function generatePasswordResetToken()
@@ -184,5 +250,30 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * @param string $email_confirm_token
+     * @return static|null
+     */
+    public static function findByEmailConfirmToken($email_confirm_token)
+    {
+        return static::findOne(['email_confirm_token' => $email_confirm_token, 'status' => self::STATUS_WAIT]);
+    }
+
+    /**
+     * Generates email confirmation token
+     */
+    public function generateEmailConfirmToken()
+    {
+        $this->email_confirm_token = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * Removes email confirmation token
+     */
+    public function removeEmailConfirmToken()
+    {
+        $this->email_confirm_token = null;
     }
 }

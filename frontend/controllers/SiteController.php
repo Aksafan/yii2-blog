@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use frontend\models\EmailConfirmForm;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -209,5 +210,29 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Confirms email.
+     *
+     * @param string $token
+     * @return mixed
+     * @throws BadRequestHttpException
+     */
+    public function actionEmailconfirm($token)
+    {
+        try {
+            $model = new EmailConfirmForm($token);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->confirmEmail()) {
+            Yii::$app->getSession()->setFlash('success', 'Thank You. Your email was confirmed successful.');
+        } else {
+            Yii::$app->getSession()->setFlash('error', 'Error of email confirmation.');
+        }
+
+        return $this->goHome();
     }
 }

@@ -37,7 +37,7 @@ AppAsset::register($this);
         ],
     ]);
 
-    $categories = Category::find()->where(['active' => true])->select(['name', 'id'])->all();
+    $categories = Category::find()->select(['name', 'id'])->all();
     $categoryMenu = [
         ['label' => 'All categories', 'url' => ['/category']],
         ['label' => '', 'options' => ['class' => 'divider']],
@@ -50,7 +50,7 @@ AppAsset::register($this);
         ['label' => 'Categories', 'items' => $categoryMenu],
         ['label' => 'Home', 'url' => ['/']],
 //        ['label' => 'About', 'url' => ['/site/about']],
-//        ['label' => 'Contact', 'url' => ['/site/contact']],
+        ['label' => 'Contact', 'url' => ['/site/contact']],
     ];
 
     if (Yii::$app->user->isGuest) {
